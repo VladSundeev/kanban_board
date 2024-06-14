@@ -10,7 +10,7 @@ const routes = [
         path: '/',
         name: 'TaskBoard',
         component: TaskBoard,
-        meta: { requiresAuth: true } // Объявляем метаданные, требующие аутентификации
+        // meta: { requiresAuth: true }
     },
     {
         path: '/add-column',
@@ -41,11 +41,9 @@ const router = createRouter({
     routes
 });
 
-// Навигационный охранник для аутентификации
 router.beforeEach((to, from, next) => {
-    const loggedIn = localStorage.getItem('user');
+    const loggedIn = localStorage.getItem('token');
 
-    // Если маршрут требует аутентификации и пользователь не аутентифицирован, перенаправляем на страницу входа
     if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
         next('/login');
     } else {

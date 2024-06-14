@@ -1,43 +1,36 @@
 <template>
   <div>
-    <h1>Login</h1>
-    <input v-model="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
-    <button @click="login">Login</button>
+    <form @submit.prevent="login">
+      <input type="email" v-model="email" placeholder="Email" required>
+      <input type="password" v-model="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import axios from '@/axios';
 
 export default {
-  name: 'UserLogin',
-  setup() {
-    const email = ref('');
-    const password = ref('');
-    const router = useRouter();
-
-    const login = async () => {
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
+  methods: {
+    async login() {
       try {
         const response = await axios.post('http://127.0.0.1:8000/api/login', {
-          email: email.value,
-          password: password.value,
+          email: this.email,
+          password: this.password
         });
-
-        localStorage.setItem('user', JSON.stringify(response.data));
-        router.push('/');
+        localStorage.setItem('token', response.data.token);
+        this.$router.push('/');
       } catch (error) {
-        console.error('Error logging in:', error);
+        console.error(error);
       }
-    };
-
-    return {
-      email,
-      password,
-      login
-    };
+    }
   }
 };
 </script>
